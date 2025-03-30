@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Player Connections</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12 text-center mb-4">
+                <h1>Football Player Connection Finder</h1>
+                <p class="lead">Find how two football players are connected through teammates</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="search-form">
+                            <div class="row g-3">
+                                <div class="col-md-5">
+                                    <label for="player1" class="form-label">First Player</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                        <input type="text" class="form-control player-autocomplete" id="player1" placeholder="Enter player name" required>
+                                        <button class="btn btn-outline-secondary clear-btn" type="button" data-target="player1">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="player2" class="form-label">Second Player</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                        <input type="text" class="form-control player-autocomplete" id="player2" placeholder="Enter player name" required>
+                                        <button class="btn btn-outline-secondary clear-btn" type="button" data-target="player2">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100" id="search-btn">
+                                        <i class="bi bi-search me-1"></i> Find
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div id="loading" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>Finding connection...</p>
+                </div>
+                
+                <div id="results" class="d-none">
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-diagram-3 me-2"></i>Connection Results
+                            </h5>
+                            <div class="btn-group" id="path-selector">
+                                <!-- Path buttons will be added here -->
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="connection-summary" class="mb-3"></div>
+                            
+                            <!-- Connection Legend -->
+                            <div class="connection-legend mb-4 p-3 bg-light rounded">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-info-circle me-2 text-primary"></i>
+                                    <strong>How to read the connection:</strong>
+                                </div>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-fill me-2 text-primary"></i>
+                                        <small>Players are shown in blue boxes at the start and end of each connection</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-arrow-down me-2 text-primary"></i>
+                                        <small>Teams where players played together are shown in white boxes between them</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-calendar-event me-2 text-primary"></i>
+                                        <small>The seasons they played together are listed in chronological order</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="path-display">
+                                <!-- Path details will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="error-message" class="alert alert-danger d-none"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 

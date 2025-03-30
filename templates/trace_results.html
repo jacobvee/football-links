@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Connection Trace Results</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        pre { background-color: #f5f5f5; padding: 10px; border-radius: 5px; }
+        .card { margin-bottom: 20px; }
+        .path-player { font-weight: bold; color: #0d6efd; }
+        .team-info { color: #198754; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4 mb-5">
+        <h1>Player Connection Tracing</h1>
+        <p class="lead">Detailed analysis of connections between Arteta, Özil, and Benzema</p>
+
+        <div class="card">
+            <div class="card-header">
+                Players Found
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for name, data in results.players_found.items() %}
+                        <li class="list-group-item">
+                            <strong>{{ name }}</strong>: ID {{ data.id }} ({{ data.source }})
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                {% if results.missing_players %}
+                    <div class="alert alert-warning mt-3">
+                        <h5>Missing Players:</h5>
+                        <ul>
+                            {% for name in results.missing_players %}
+                                <li>{{ name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Connections Between Players
+            </div>
+            <div class="card-body">
+                {% for connection, data in results.connections.items() %}
+                    <h5>{{ connection }}</h5>
+                    {% if data is string %}
+                        <p class="alert alert-warning">{{ data }}</p>
+                    {% else %}
+                        <p>Path length: {{ data.path_length }}</p>
+                        <p>Full path: 
+                            {% for name in data.path %}
+                                <span class="path-player">{{ name }}</span>
+                                {% if not loop.last %} → {% endif %}
+                            {% endfor %}
+                        </p>
+                        
+                        <h6>Connection Details:</h6>
+                        <ul class="list-group mb-4">
+                            {% for detail in data.details %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="path-player">{{ detail.from }}</span> → 
+                                            <span class="path-player">{{ detail.to }}</span>
+                                        </div>
+                                    </div>
+                                    {% if detail.teams %}
+                                        <ul class="mt-2">
+                                            {% for team in detail.teams %}
+                                                <li><span class="team-info">{{ team }}</span></li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                    {% if detail.error %}
+                                        <div class="alert alert-danger mt-2">Error: {{ detail.error }}</div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Search Results for Player Names
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="searchAccordion">
+                    {% for term, matches in results.search_results.items() %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ term }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse{{ term }}" aria-expanded="false" aria-controls="collapse{{ term }}">
+                                    {{ term }} ({{ matches|length }} matches)
+                                </button>
+                            </h2>
+                            <div id="collapse{{ term }}" class="accordion-collapse collapse" aria-labelledby="heading{{ term }}" 
+                                data-bs-parent="#searchAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-group">
+                                        {% for match in matches %}
+                                            <li class="list-group-item">{{ match.name }} (ID: {{ match.id }})</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Özil to Benzema Connection Paths
+            </div>
+            <div class="card-body">
+                {% if results.ozil_benzema_paths %}
+                    {% for path_data in results.ozil_benzema_paths %}
+                        <div class="mb-4">
+                            <h5>Path {{ loop.index }}:</h5>
+                            <p>
+                                {% for name in path_data.path %}
+                                    <span class="path-player">{{ name }}</span>
+                                    {% if not loop.last %} → {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="text-muted">
+                                Özil ID: {{ path_data.ozil_id }}, Benzema ID: {{ path_data.benzema_id }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        No paths found between Özil and Benzema
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
